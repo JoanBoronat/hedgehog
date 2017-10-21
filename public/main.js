@@ -12,9 +12,10 @@ const ctxL = document.getElementById("luminosity-chart").getContext("2d");
 const cfgL = config('Luminosity (lux)', '#339aad', 0, 100, 10, 100);
 const Lchart = new Chart(ctxL, cfgL);
 
+let errorCounter = 0;
 
 socket.on('temperature', function (data) {
-    $('#temperature').text(data)
+    $('#temperature').text(data + ' °C')
     addData(Tchart, data)
 });
 
@@ -24,24 +25,17 @@ socket.on('humidity', function (data) {
 });
 
 socket.on('luminosity', function (data) {
-    $('#luminosity').text(data)
+    $('#luminosity').text(data + ' lx')
     addData(Lchart, data)    
 });
 
+socket.on('sensorError', function(data) {
+    const {sensor, error, value} = data
+    addError(sensor, error, value)
+});
+
 $( function() {
-    $( "#slider-range" ).slider({
-      range: true,
-      min: Tchart.config.min,
-      max: Tchart.config.max,
-      values: [ Tchart.config.limMin , Tchart.config.limMax ],
-      slide: function( event, ui ) {
-        console.log(ui.values)
-      },
-      change: function( event, ui ) {
-        console.log(ui.values)
-        Tchart.config.limMin = ui.values[0];
-        Tchart.config.limMax = ui.values[1];
-      }
-    });
-    
-  } );
+    createSlider(Tchart, '#slider-temperature');
+    createSlider(Hchart, '#slider-humidity');
+    createSlider(Lchart, '#slider-luminosity');
+});

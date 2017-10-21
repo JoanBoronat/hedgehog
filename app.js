@@ -13,12 +13,15 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
 
     setInterval(() => {
-        socket.emit('temperature', Math.random() * 100 % 100);
-        socket.emit('humidity', Math.random() * 100 % 100);
-        socket.emit('luminosity', Math.random() * 100 % 100);
-    }, 1000)
-    
-  
-  
+        socket.emit('temperature', (Math.random() * 100 % 100).toFixed(2));
+        socket.emit('humidity', (Math.random() * 100 % 100).toFixed(2));
+        socket.emit('luminosity', (Math.random() * 100 % 100).toFixed(2));
+
+        //socket.emit('sensorError', {sensor: 'Temperature', 'error': 'Maximum temperature exceeded', 'value': 10.5});
+    }, 1000);
+
+    socket.on('setLimit', function(data) {
+        console.log(data);
+    });
 
 });

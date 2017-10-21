@@ -1,6 +1,6 @@
 {
   "name": "hedgehog",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Arduino Embedded System with real-time communication with NodeJS",
   "main": "app.js",
   "scripts": {
@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/JoanBoronat/hedgehog#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "socket.io": "^2.0.3"
   }
 }

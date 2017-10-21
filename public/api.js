@@ -1,4 +1,4 @@
-const MAX_VALUES = 20;
+const MAX_VALUES = 15;
 
 
 function config(label, color, min, max, limMin, limMax){
@@ -17,6 +17,7 @@ function config(label, color, min, max, limMin, limMax){
                 label: "Value",
                 backgroundColor: color,
                 borderColor: color,
+                borderWidth: 1.2,
                 data: Array(MAX_VALUES  ).fill(min),
                 fill: false,
             },
@@ -34,7 +35,7 @@ function config(label, color, min, max, limMin, limMax){
                 backgroundColor: '#bf283e',
                 borderColor: '#bf283e',
                 pointRadius: 0,
-                borderWidth: 0.8,
+                borderWidth: 1,
                 data: Array(MAX_VALUES).fill(limMax),
                 fill: false,
             }
@@ -70,7 +71,7 @@ function config(label, color, min, max, limMin, limMax){
                         max: max
                     },
                     scaleLabel: {
-                        display: true,
+                        display: false,
                         labelString: label
                     },
                     gridLines: {
@@ -85,11 +86,13 @@ function config(label, color, min, max, limMin, limMax){
 function addData(chart, value) {
 
     let {config} = chart
-    
-    config.data.labels.splice(0,1);
-    config.data.labels.push(config.counter);
+    const label = config.counter % 2 == 0 ? config.counter : '';
 
-    config.data.datasets[0].data.push(value);
+    config.data.labels.splice(0,1);
+
+    config.data.labels.push(label);
+
+    config.data.datasets[0].data.push(value);   
     config.data.datasets[0].data.splice(0,1);
 
     config.data.datasets[1].data.push(config.limMin);
@@ -102,3 +105,34 @@ function addData(chart, value) {
     chart.update();
 
 };
+
+function addError(sensor, error, value) {
+    const tr = $(`<tr>
+        <th scope='row'>${errorCounter++}</th>
+        <td>${(new Date).toLocaleString()}</td>
+        <td>${sensor}</td>
+        <td>${error}</td>
+        <td>${value}</td>
+    </tr>`)
+
+    $('#table-log').prepend(tr)
+}
+
+function createSlider(chart, id, sensor) {
+    $( id ).slider({
+        range: true,
+        min: chart.config.min,
+        max: chart.config.max,
+        values: [ chart.config.limMin , chart.config.limMax ],
+        slide: function( event, ui ) {
+            $(id + "-display").text(ui.values[0] + ' - ' + ui.values[1])
+            $(id + "-display").fadeIn()
+        },
+        change: function( event, ui ) {
+          chart.config.limMin = ui.values[0];
+          chart.config.limMax = ui.values[1];
+          $(id + "-display").fadeOut()
+          socket.emit('setLimit', {sensor: id.split('-')[1], values: ui.values})
+        }
+    });
+}

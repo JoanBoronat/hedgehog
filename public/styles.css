@@ -1,14 +1,50 @@
 .kpi-container {
     text-align: center;
-
 }
 
-.container-fluid {
-    margin-top: 20px;
+.kpi-title {
+    font-size: large;
+}
+
+.kpi-value {
+    font-weight: bold;
+    font-size: 3em
+}
+
+.chart-container {
+    margin: 0px;
+    padding: 0px;
+}
+
+.container-fluid, .container {
+    margin-top: 30px;
+}
+
+.table-dark {
+    background-color: transparent
 }
 
 .row {
     padding: 20px; 
+}
+
+a, a:hover {
+    color: white;
+}
+
+.nav-tabs .nav-link {
+    margin-right: 10px;
+    border-bottom-right-radius: .25rem;
+    border-bottom-left-radius: .25rem;
+}
+
+.nav-tabs .nav-link.active {
+    color: white;
+    background-color: transparent;
+}
+
+.nav {
+    border-bottom: 0px;
 }
 
 body {
@@ -16,9 +52,39 @@ body {
     color: white;
 }
 
-.slider {
-    
-    margin-top: 10px
+.slider {   
+    margin-top: 30px;
+    margin-left: 40px;
 }
 
+.slider-display {
+    display: none;
+    text-align: center;
+    margin-left: 40px;
+}
 
+.ui-slider-handle {
+    border-radius: 100px;
+}
+
+.ui-corner-all {
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.ui-slider-horizontal {
+    height: .5em;
+    top: -.5em
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+    background-color: #f6f6f6;
+    border-color: #252830;
+    outline: none;
+}
+
+.ui-widget-content, .ui-widget-header {
+    background-color: transparent;
+}
