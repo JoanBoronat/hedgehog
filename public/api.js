@@ -2,8 +2,8 @@ const MAX_VALUES = 15;
 
 
 function config(label, color, min, max, limMin, limMax){
-    Chart.defaults.global.defaultFontColor = "#fff";
-    Chart.defaults.global.defaultColor = '#fff'
+    Chart.defaults.global.defaultFontColor = "#bcc0c6";
+    Chart.defaults.global.defaultColor = '#bcc0c6'
     return {
         type: 'line',
         counter: 0,
@@ -45,7 +45,6 @@ function config(label, color, min, max, limMin, limMax){
             legend: {
                 display: false
             },
-            scaleFontColor: "#FFFFFF",
             responsive: true,
             tooltips: {
                 mode: 'index',
@@ -135,4 +134,16 @@ function createSlider(chart, id, sensor) {
           socket.emit('setLimit', {sensor: id.split('-')[1], values: ui.values})
         }
     });
+}
+
+
+function updateValue(id, value, unit, chart) {
+    const {limMin, limMax} = chart.config
+    const alertMin = limMin + limMin * 0.1;
+    const alertMax = limMax * 0.9;
+
+    $(id).text(value + ' ' + unit)
+    if (value > limMax || value < limMin) $( id ).animate({color: "#bf283e"}, 500);
+    else if (value > alertMax || value < alertMin) $( id ).animate({color: "#edd23b"}, 500);
+    else $( id ).animate({color: "#34ad3c"}, 200);
 }

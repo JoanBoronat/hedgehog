@@ -15,17 +15,17 @@ const Lchart = new Chart(ctxL, cfgL);
 let errorCounter = 0;
 
 socket.on('temperature', function (data) {
-    $('#temperature').text(data + ' °C')
+    updateValue('#temperature', data, '°C', Tchart);
     addData(Tchart, data)
 });
 
 socket.on('humidity', function (data) {
-    $('#humidity').text(data)
+    updateValue('#humidity', data, '', Hchart);
     addData(Hchart, data)
 });
 
 socket.on('luminosity', function (data) {
-    $('#luminosity').text(data + ' lx')
+    updateValue('#luminosity', data, 'lx', Lchart);
     addData(Lchart, data)    
 });
 

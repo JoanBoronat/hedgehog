@@ -3,12 +3,16 @@
 }
 
 .kpi-title {
-    font-size: large;
+    font-size: 1.7em;
+    color: #bcc0c6;
+    font-weight: 600;
 }
 
 .kpi-value {
-    font-weight: bold;
-    font-size: 3em
+    font-size: 4em;
+    font-family: monospace;
+    position: relative;
+    top: -.3em;
 }
 
 .chart-container {
@@ -34,8 +38,7 @@ a, a:hover {
 
 .nav-tabs .nav-link {
     margin-right: 10px;
-    border-bottom-right-radius: .25rem;
-    border-bottom-left-radius: .25rem;
+    border-width: 0px;
 }
 
 .nav-tabs .nav-link.active {
@@ -44,7 +47,8 @@ a, a:hover {
 }
 
 .nav {
-    border-bottom: 0px;
+    padding: 10px;
+    border-color: #4f4e4e
 }
 
 body {
