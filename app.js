@@ -4,6 +4,8 @@ const app = express();
 const server = app.listen(80);
 const io = socket(server);
 
+let pwr = true;
+
 app.use(express.static('public'));
 
 app.get('/', function (req, res) {
@@ -13,15 +15,22 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
 
     setInterval(() => {
-        socket.emit('temperature', (Math.random() * 100 % 100).toFixed(2));
-        socket.emit('humidity', (Math.random() * 100 % 100).toFixed(2));
-        socket.emit('luminosity', (Math.random() * 100 % 100).toFixed(2));
+        if (pwr) { 
+            socket.emit('temperature', (Math.random() * 100 % 100).toFixed(2));
+            socket.emit('humidity', (Math.random() * 100 % 100).toFixed(2));
+            socket.emit('luminosity', (Math.random() * 100 % 100).toFixed(2));
+        }
 
         //socket.emit('sensorError', {sensor: 'Temperature', 'error': 'Maximum temperature exceeded', 'value': 10.5});
     }, 1000);
 
     socket.on('setLimit', function(data) {
         console.log(data);
+    });
+
+    socket.on('power', function(data) {
+        pwr = data == 'on' ? true : false;
+        console.log('   power' + data);
     });
 
 });

@@ -21,7 +21,7 @@ socket.on('temperature', function (data) {
 
 socket.on('humidity', function (data) {
     updateValue('#humidity', data, '', Hchart);
-    addData(Hchart, data)
+    addData(Hchart, data) 
 });
 
 socket.on('luminosity', function (data) {
@@ -38,4 +38,9 @@ $( function() {
     createSlider(Tchart, '#slider-temperature');
     createSlider(Hchart, '#slider-humidity');
     createSlider(Lchart, '#slider-luminosity');
+
+    $('#stop').click(() => power('off'))    
+    $('#start').click(() => power('on'))
+
 });
+

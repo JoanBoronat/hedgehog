@@ -51,6 +51,14 @@ a, a:hover {
     border-color: #4f4e4e
 }
 
+.power, .power:hover {
+    background-color: transparent
+}
+
+#start {
+    display: none;
+}
+
 body {
     background-color: #252830;
     color: white;

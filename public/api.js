@@ -4,6 +4,10 @@ const MAX_VALUES = 15;
 function config(label, color, min, max, limMin, limMax){
     Chart.defaults.global.defaultFontColor = "#bcc0c6";
     Chart.defaults.global.defaultColor = '#bcc0c6'
+    Chart.defaults.global.animation.duration = 500;
+    Chart.defaults.global.animation.easing = 'linear';
+    Chart.defaults.global.elements.line.tension = 0.2;
+
     return {
         type: 'line',
         counter: 0,
@@ -146,4 +150,19 @@ function updateValue(id, value, unit, chart) {
     if (value > limMax || value < limMin) $( id ).animate({color: "#bf283e"}, 500);
     else if (value > alertMax || value < alertMin) $( id ).animate({color: "#edd23b"}, 500);
     else $( id ).animate({color: "#34ad3c"}, 200);
+}
+
+function power(state) {
+    switch (state) {
+        case 'on':
+            $('#start').hide();
+            $('#stop').show();
+            socket.emit('power', 'on')
+        break;
+        case 'off':
+            $('#stop').hide();
+            $('#start').show();
+            socket.emit('power', 'off')
+        break;
+    }
 }
