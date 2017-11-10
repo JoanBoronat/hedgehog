@@ -1,6 +1,12 @@
 #include <DHT11.h>
+#include <Photoresistor.h>
+
 int pin=4;
-DHT11 dht11(pin); 
+int pinPhotoresistor = A1;
+
+Photoresistor photo(pinPhotoresistor);
+DHT11 dht11(pin);
+
 void setup()
 {
    Serial.begin(9600);
@@ -13,20 +19,23 @@ void loop()
 {
   int err;
   float temp, humi;
+
+  photo.readLight();
   if((err=dht11.read(humi, temp))==0)
   {
-    Serial.print("temperature:");
-    Serial.print(temp);
-    Serial.print(" humidity:");
-    Serial.print(humi);
-    Serial.println();
+    Serial.print("temperature ");
+    Serial.println(temp);
+    Serial.print("humidity ");
+    Serial.println(humi);
+    Serial.print("luminosity ");
+    Serial.println(photo.lux);
   }
   else
   {
-    Serial.println();
+   /* Serial.println();
     Serial.print("Error No :");
     Serial.print(err);
-    Serial.println();    
+    Serial.println();  */  
   }
   delay(DHT11_RETRY_DELAY); //delay for reread
 }

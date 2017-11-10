@@ -1,11 +1,11 @@
 const socket = io.connect('http://localhost');
 
 const ctxT = document.getElementById("temperature-chart").getContext("2d");
-const cfgT = config('Temperature (Celcius)', '#2377d1', 0, 50, 10, 90);
+const cfgT = config('Temperature (Celcius)', '#2377d1', 0, 50, 5, 45);
 const Tchart = new Chart(ctxT, cfgT);
 
 const ctxH = document.getElementById("humidity-chart").getContext("2d");
-const cfgH = config('Humidity (RH)', '#34ad3c', 0, 80, 5, 70);
+const cfgH = config('Humidity (RH)', '#34ad3c', 20, 90, 22, 88);
 const Hchart = new Chart(ctxH, cfgH);
 
 const ctxL = document.getElementById("luminosity-chart").getContext("2d");
@@ -20,12 +20,12 @@ socket.on('temperature', function (data) {
 });
 
 socket.on('humidity', function (data) {
-    updateValue('#humidity', data, '', Hchart);
+    updateValue('#humidity', data, '%RH', Hchart);
     addData(Hchart, data) 
 });
 
 socket.on('luminosity', function (data) {
-    updateValue('#luminosity', data, 'lx', Lchart);
+    updateValue('#luminosity', data, 'lux', Lchart);
     addData(Lchart, data)    
 });
 

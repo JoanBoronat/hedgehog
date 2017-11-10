@@ -6,6 +6,20 @@ const io = socket(server);
 
 let pwr = true;
 
+const SerialPort = require('serialport');
+const parsers = SerialPort.parsers;
+
+// Use a `\r\n` as a line terminator
+const parser = new parsers.Readline({
+  delimiter: '\r\n'
+});
+
+const port = new SerialPort('COM3', {
+  baudRate: 9600
+});
+
+port.pipe(parser);
+
 app.use(express.static('public'));
 
 app.get('/', function (req, res) {
@@ -14,15 +28,24 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
 
-    setInterval(() => {
-        if (pwr) { 
-            socket.emit('temperature', (Math.random() * 100 % 100).toFixed(2));
-            socket.emit('humidity', (Math.random() * 100 % 100).toFixed(2));
-            socket.emit('luminosity', (Math.random() * 100 % 100).toFixed(2));
-        }
+    let sensor, value
+    parser.on('data', (data) => {
+        
+        [sensor, value] = data.split(' ')
+        switch(sensor) {
+            case 'temperature':
+                socket.emit('temperature', value)
+                break;
+            case 'humidity':
+                socket.emit('humidity', value)
+                break;
+            case 'luminosity':
+                socket.emit('luminosity', value)
+                break;
 
-        //socket.emit('sensorError', {sensor: 'Temperature', 'error': 'Maximum temperature exceeded', 'value': 10.5});
-    }, 1000);
+        }
+    
+    });
 
     socket.on('setLimit', function(data) {
         console.log(data);
