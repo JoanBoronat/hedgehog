@@ -2,28 +2,24 @@ const express = require('express');
 const app = express();
 const server = app.listen(80, () => console.log("Server listening on port 80"));
 
-const SerialPort = require('serialport')
+const SerialPort = require('serialport');
+const parsers = SerialPort.parsers;
 
-var sp = new SerialPort('COM3', {
-    baudRate: 9600,
-}, function (err) {
-    if (err) {
-      return console.log('Error: ', err.message);
-    }
+// Use a `\r\n` as a line terminator
+const parser = new parsers.Readline({
+  delimiter: '\r\n'
 });
 
-sp.on('open', onPortOpen);
-sp.on('data', onData);
-sp.on('error', onError);
+const port = new SerialPort('COM3', {
+  baudRate: 9600
+});
 
-function onPortOpen(){
-    console.log("ARDUINO PORT OPENED");
-}
+port.pipe(parser);
 
-function onData(d){
-    console.log("Data: ");
-}
+port.on('open', () => console.log('Port open'));
 
-function onError(error){
-    console.log("ERROR: ", error);
-}
+let i= 0
+parser.on('data', (data) => {
+    i++;
+    console.log(i, 'Data received: ', data)
+});
