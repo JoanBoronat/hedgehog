@@ -1,11 +1,11 @@
 const socket = io.connect('http://localhost');
 
 const ctxT = document.getElementById("temperature-chart").getContext("2d");
-const cfgT = config('Temperature (Celcius)', '#2377d1', 0, 100, 10, 90);
+const cfgT = config('Temperature (Celcius)', '#2377d1', 0, 50, 10, 90);
 const Tchart = new Chart(ctxT, cfgT);
 
 const ctxH = document.getElementById("humidity-chart").getContext("2d");
-const cfgH = config('Humidity', '#34ad3c', 0, 100, 5, 70);
+const cfgH = config('Humidity (RH)', '#34ad3c', 0, 80, 5, 70);
 const Hchart = new Chart(ctxH, cfgH);
 
 const ctxL = document.getElementById("luminosity-chart").getContext("2d");

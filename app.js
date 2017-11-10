@@ -1,7 +1,7 @@
 const express = require('express');
 const socket = require('socket.io');
 const app = express();
-const server = app.listen(80);
+const server = app.listen(80, () => console.log("Server listening on port 80"));
 const io = socket(server);
 
 let pwr = true;
