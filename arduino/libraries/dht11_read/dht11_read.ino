@@ -37,7 +37,7 @@ void loop()
     Serial.print(err);
     Serial.println();  */  
   }
-  delay(DHT11_RETRY_DELAY); //delay for reread
+  delay(DHT11_DELAY); //delay for reread
 }
 
 
