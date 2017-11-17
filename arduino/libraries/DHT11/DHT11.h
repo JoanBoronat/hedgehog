@@ -12,5 +12,5 @@ protected:
 	void waitFor(uint8_t target);
 public:
 	DHT11(int pin_number);
-	int read( float& humidity, float& temperature);
+	int read( float &humidity, float &temperature);
 };
