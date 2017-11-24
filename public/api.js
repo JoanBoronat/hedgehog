@@ -89,11 +89,10 @@ function config(label, color, min, max, limMin, limMax){
 function addData(chart, value) {
 
     let {config} = chart
-    const label = config.counter % 2 == 0 ? config.counter : '';
 
     config.data.labels.splice(0,1);
 
-    config.data.labels.push(label);
+    config.data.labels.push('');
 
     config.data.datasets[0].data.push(value);   
     config.data.datasets[0].data.splice(0,1);

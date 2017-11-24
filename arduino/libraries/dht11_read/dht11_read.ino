@@ -1,27 +1,37 @@
 #include <DHT11.h>
 #include <Photoresistor.h>
+#include <Timer.h>
 
-int pin=4;
+int pin = 4;
 int pinPhotoresistor = A1;
+char incomingByte;
 
+char inData[20]; // Allocate some space for the string
+char inChar= ""; // Where to store the character read
+byte index = 0; // Index into array; where to store the character
+
+Timer t;
 Photoresistor photo(pinPhotoresistor);
 DHT11 dht11(pin);
 
 void setup()
 {
-   Serial.begin(9600);
-  while (!Serial) {
-      ; // wait for serial port to connect. Needed for Leonardo only
-    }
+  Serial.begin(9600);
+  //int tickEvent = t.every(1000, dht11_handler, (void*) 1);
+  int tickEvent2 = t.every(10, reader, (void*) 2);
 }
 
 void loop()
 {
-  int err;
+  t.update();
+}
+
+
+void dht11_handler(void* context) {
   float temp, humi;
 
   photo.readLight();
-  if((err=dht11.read(humi, temp))==0)
+  if (dht11.read(humi, temp) == 0)
   {
     Serial.print("temperature ");
     Serial.println(temp);
@@ -30,15 +40,25 @@ void loop()
     Serial.print("luminosity ");
     Serial.println(photo.lux);
   }
-  else
-  {
-   /* Serial.println();
-    Serial.print("Error No :");
-    Serial.print(err);
-    Serial.println();  */  
-  }
-  delay(DHT11_RETRY_DELAY); //delay for reread
 }
 
+void reader(void* context) {
+  if (Serial.available() > 0) {
 
-
+    inChar = Serial.read(); // Read a character
+    Serial.print(inChar);
+    if(inChar != "\n") // One less than the size of the array
+    {
+        
+        inData[index] = inChar; // Store it
+        index++; // Increment where to write next
+    } 
+    else 
+    {
+        for(int i=0; i<index; i++) {
+          Serial.print(inData[index]);
+        }
+        index = 0;
+    }
+  }
+}

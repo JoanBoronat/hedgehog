@@ -5,11 +5,11 @@ const cfgT = config('Temperature (Celcius)', '#2377d1', 0, 50, 5, 45);
 const Tchart = new Chart(ctxT, cfgT);
 
 const ctxH = document.getElementById("humidity-chart").getContext("2d");
-const cfgH = config('Humidity (RH)', '#34ad3c', 20, 90, 22, 88);
+const cfgH = config('Humidity (RH)', '#34ad3c', 0, 100, 10, 88);
 const Hchart = new Chart(ctxH, cfgH);
 
 const ctxL = document.getElementById("luminosity-chart").getContext("2d");
-const cfgL = config('Luminosity (lux)', '#339aad', 0, 100, 10, 100);
+const cfgL = config('Luminosity (lux)', '#339aad', 0, 1200, 0, 1200);
 const Lchart = new Chart(ctxL, cfgL);
 
 let errorCounter = 0;

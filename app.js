@@ -14,7 +14,7 @@ const parser = new parsers.Readline({
   delimiter: '\r\n'
 });
 
-const port = new SerialPort('COM3', {
+const port = new SerialPort('COM4', {
   baudRate: 9600
 });
 
@@ -31,7 +31,8 @@ io.on('connection', function (socket) {
     let sensor, value
     parser.on('data', (data) => {
         
-        [sensor, value] = data.split(' ')
+        console.log(data)
+        /*[sensor, value] = data.split(' ')
         switch(sensor) {
             case 'temperature':
                 socket.emit('temperature', value)
@@ -43,12 +44,12 @@ io.on('connection', function (socket) {
                 socket.emit('luminosity', value)
                 break;
 
-        }
+        }*/
     
     });
 
     socket.on('setLimit', function(data) {
-        console.log(data);
+        port.write("Hello world")
     });
 
     socket.on('power', function(data) {
