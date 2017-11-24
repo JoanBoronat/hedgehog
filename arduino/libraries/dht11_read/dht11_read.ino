@@ -40,6 +40,17 @@ void dht11_handler(void* context) {
     Serial.print("luminosity ");
     Serial.println(photo.lux);
   }
+<<<<<<< HEAD
+=======
+  else
+  {
+   /* Serial.println();
+    Serial.print("Error No :");
+    Serial.print(err);
+    Serial.println();  */  
+  }
+  delay(DHT11_DELAY); //delay for reread
+>>>>>>> 1d8153a84b8c6dd0f72e5bb7099827b09efcc1db
 }
 
 void reader(void* context) {
