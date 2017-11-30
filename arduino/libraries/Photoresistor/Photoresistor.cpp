@@ -3,6 +3,7 @@
 Photoresistor::Photoresistor(uint8_t _pin)
 {
     pin = _pin;
+    pinMode(pin, INPUT);
 }
 
 void Photoresistor::readLight(void)

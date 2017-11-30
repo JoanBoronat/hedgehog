@@ -3,6 +3,7 @@
 Led::Led(uint8_t _pin)
 {
     pin = _pin;
+    pinMode(pin, OUTPUT);
 }
 
 void Led::increaseIntensity(void)
@@ -15,4 +16,14 @@ void Led::decreaseIntensity(void)
 {
     ledIntensity = ledIntensity - variation < 0 ? 0 : ledIntensity - variation;
     analogWrite(pin, ledIntensity);
+}
+
+void Led::on(void)
+{
+    digitalWrite(pin, HIGH);
+}
+
+void Led::off(void)
+{
+    digitalWrite(pin, LOW);
 }

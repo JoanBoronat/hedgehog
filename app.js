@@ -32,7 +32,7 @@ io.on('connection', function (socket) {
     parser.on('data', (data) => {
         
         console.log(data)
-        /*[sensor, value] = data.split(' ')
+        [sensor, value, error] = data.split(' ')
         switch(sensor) {
             case 'temperature':
                 socket.emit('temperature', value)
@@ -43,8 +43,10 @@ io.on('connection', function (socket) {
             case 'luminosity':
                 socket.emit('luminosity', value)
                 break;
-
-        }*/
+            case 'error':
+                socket.emit('sensorError', {sensor, value, error})
+                break;
+        }
     
     });
 

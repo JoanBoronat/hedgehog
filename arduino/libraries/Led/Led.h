@@ -12,6 +12,8 @@ class Led
         volatile float ledIntensity = 0;
         void increaseIntensity(void);
         void decreaseIntensity(void);
+        void on(void);
+        void off(void);
     protected:
         const static float maxIntensity = 255.0;
         const static float variation = 10.0;
