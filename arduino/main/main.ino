@@ -12,17 +12,19 @@ struct Sensor
 };
 
 Led verd(11);
-Led groc(10);
 Led vermell(9);
+Led buzzer(10);
 
-Sensor humidity = {4, 10, 100};
-Sensor temperature = {A1, 10, 100};
-Sensor luminosity = {A2, 10, 100};
+Sensor humidity = {4, 10, 88};
+Sensor temperature = {A1, 5, 45};
+Sensor luminosity = {A2, 0, 1200};
 
 Photoresistor photo(luminosity.pin);
 Thermistor therm(temperature.pin);
 DHT11 dht11(humidity.pin);
 Timer t;
+
+float avarageTemp;
 
 boolean running = false;
 
@@ -33,22 +35,28 @@ void setup()
   int tickEvent = t.every(1000, sensors_handler, (void*) 1);
   int tickEvent2 = t.every(10, reader, (void*) 2);
 
-  attachInterrupt(0, startStop, RISING);
+  attachInterrupt(digitalPinToInterrupt(2), startStop, RISING);
 
-  verd.on();
-  groc.on();
-  vermell.on();
+  verd.off();
+  vermell.off();
+
+  therm.readTemp();
+  averageTemp = therm.degrees
 }
 
 void loop()
 {
   if (running) {
+    verd.on();
     t.update();
+  } else {
+    verd.off();
   }
 }
 
 void startStop() {
-  running = true;
+  running = !running;
+  
 }
 
 void sensors_handler(void* context) {
@@ -59,30 +67,36 @@ void sensors_handler(void* context) {
 
   if (dht11.read(humi, temp) == 0)
   {
-    temp = (temp + therm.degrees) / 2.0;
-
+    averageTemp = (averageTemp + therm.degrees + temp) / 3.0;
+    
     if (temp < temperature.minValue || temp > temperature.maxValue) {
-      Serial.print("error Temperature ");
+      Serial.print("error temperature ");
       Serial.println(temp);
+      vermell.on();
     } else {
       Serial.print("temperature ");
       Serial.println(temp);
+      vermell.off();
     }
 
     if (humi < humidity.minValue || humi > humidity.maxValue) {
-      Serial.print("error Humidity ");
+      Serial.print("error humidity ");
       Serial.println(humi);
+      vermell.on();
     } else {
       Serial.print("humidity ");
       Serial.println(humi);
+      vermell.off();
     }
 
     if (photo.lux < luminosity.minValue || photo.lux > luminosity.maxValue) {
-      Serial.print("error Luminosity ");
+      Serial.print("error luminosity ");
       Serial.println(photo.lux);
+      vermell.on();
     } else {
       Serial.print("luminosity ");
       Serial.println(photo.lux);
+      vermell.off();
     }
 
   }
@@ -104,32 +118,24 @@ void reader(void* context) {
   if (Serial.available() > 0)
   {
     sensor = Serial.readStringUntil(',');
-    Serial.read();
     minValue = Serial.parseInt();
     Serial.read();
     maxValue = Serial.parseInt();
     Serial.read();
-
+    
     if (sensor == "temperature") {
-      Serial.print("temperature: ");
-      Serial.print(minValue);
-      Serial.print(" ");
-      Serial.println(maxValue);
+      temperature.minValue = minValue;
+      temperature.maxValue = maxValue;
     }
 
     else if (sensor == "humidity") {
-      Serial.print("humidity: ");
-      Serial.print(minValue);
-      Serial.print(" ");
-      Serial.println(maxValue);
+      humidity.minValue = minValue;
+      humidity.maxValue = maxValue;
     }
 
     else if (sensor == "luminosity") {
-      Serial.print("luminosity: ");
-      Serial.print(minValue);
-      Serial.print(" ");
-      Serial.println(maxValue);
+      luminosity.minValue = minValue;
+      luminosity.maxValue = maxValue;
     }
-
   }
 }

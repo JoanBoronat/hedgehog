@@ -14,7 +14,7 @@ void Thermistor::readTemp(void)
 
     rtherm = Rb * ((ADCres / analogRead(pin))-1);
 
-    _degrees = (beta / log(rtherm * G)) - K;
+    _degrees = (beta / logf(rtherm * G)) - K;
 
     /* Error control */
 

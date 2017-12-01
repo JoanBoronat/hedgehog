@@ -14,9 +14,9 @@ class Thermistor
     protected:
         uint8_t pin;
         const static float ADCres = 1023.0;
-        const static float Rb = 10000.0;
+        const static float Rb = 5000.0;
         const static float beta = 3950.0;
         const static float K = 273.15;
-        const static float G = 120.668;
+        const static float G = 120.6244756;
     private:
 };
