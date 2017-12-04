@@ -3,6 +3,7 @@
 #include <Timer.h>
 #include <Thermistor.h>
 #include <Led.h>
+#include <EEPROM.h> //Needed to access the eeprom read write functions
 
 struct Sensor
 {
@@ -24,7 +25,7 @@ Thermistor therm(temperature.pin);
 DHT11 dht11(humidity.pin);
 Timer t;
 
-float avarageTemp;
+unsigned int maxTemp, minTemp;
 
 boolean running = false;
 
@@ -41,7 +42,9 @@ void setup()
   vermell.off();
 
   therm.readTemp();
-  averageTemp = therm.degrees
+
+  minTemp = EEPROMReadInt(0);
+  maxTemp = EEPROMReadInt(2);
 }
 
 void loop()
@@ -56,19 +59,24 @@ void loop()
 
 void startStop() {
   running = !running;
-  
 }
 
 void sensors_handler(void* context) {
-  float temp, humi;
+  float humi, temp;
 
   therm.readTemp();
   photo.readLight();
 
   if (dht11.read(humi, temp) == 0)
   {
-    averageTemp = (averageTemp + therm.degrees + temp) / 3.0;
-    
+    if ((unsigned int) temp < minTemp) {
+      EEPROMWriteInt(0, (unsigned int) temp);
+    }
+
+    if ((unsigned int) temp > maxTemp) {
+      EEPROMWriteInt(2, (unsigned int) temp);
+    }
+
     if (temp < temperature.minValue || temp > temperature.maxValue) {
       Serial.print("error temperature ");
       Serial.println(temp);
@@ -100,13 +108,6 @@ void sensors_handler(void* context) {
     }
 
   }
-  /*else
-    {
-    Serial.println();
-    Serial.print("Error No :");
-    Serial.print(err);
-    Serial.println();
-    }*/
   delay(DHT11_DELAY); //delay for reread
 }
 
@@ -122,7 +123,7 @@ void reader(void* context) {
     Serial.read();
     maxValue = Serial.parseInt();
     Serial.read();
-    
+
     if (sensor == "temperature") {
       temperature.minValue = minValue;
       temperature.maxValue = maxValue;
@@ -138,4 +139,21 @@ void reader(void* context) {
       luminosity.maxValue = maxValue;
     }
   }
+}
+
+void EEPROMWriteInt(int adress, int value)
+{
+  byte primerByte = ((value >> 0) & 0xFF);
+  byte segonByte = ((value >> 8) & 0xFF);
+
+  EEPROM.write(adress, primerByte);
+  EEPROM.write(adress + 1, segonByte);
+}
+
+unsigned int EEPROMReadInt(int adress)
+{
+  byte primerByte = EEPROM.read(adress);
+  byte segonByte = EEPROM.read(adress + 1);
+
+  return ((primerByte << 0) & 0xFF) + ((segonByte << 8) & 0xFF00);
 }
