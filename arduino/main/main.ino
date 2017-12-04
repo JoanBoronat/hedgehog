@@ -12,9 +12,9 @@ struct Sensor
   int maxValue;
 };
 
+// Initialization of the components
 Led verd(11);
 Led vermell(9);
-Led buzzer(10);
 
 Sensor humidity = {4, 10, 88};
 Sensor temperature = {A1, 5, 45};
@@ -25,30 +25,37 @@ Thermistor therm(temperature.pin);
 DHT11 dht11(humidity.pin);
 Timer t;
 
+// Global variables to store the max and min temperature
 unsigned int maxTemp, minTemp;
 
+// Global variable with the status of the system (running or stopped)
 boolean running = false;
 
 void setup()
 {
   Serial.begin(9600);
 
+  // Initialization of the tasks
   int tickEvent = t.every(1000, sensors_handler, (void*) 1);
   int tickEvent2 = t.every(10, reader, (void*) 2);
 
+  // Set up the button to turn on or off the system
   attachInterrupt(digitalPinToInterrupt(2), startStop, RISING);
 
+  // Turn off the lights
   verd.off();
   vermell.off();
 
-  therm.readTemp();
-
+  // Retrieve the last values of the min and max temperature
   minTemp = EEPROMReadInt(0);
   maxTemp = EEPROMReadInt(2);
 }
 
 void loop()
 {
+  // Using the Timer library to schedule the tasks
+  // If the status is running update the Timer and turn
+  // the green led on otherwise don't update and turn off the led
   if (running) {
     verd.on();
     t.update();
@@ -58,25 +65,31 @@ void loop()
 }
 
 void startStop() {
-  running = !running;
+  running = !running; // A single button to handle on/off
 }
 
 void sensors_handler(void* context) {
   float humi, temp;
 
+  // Retrieve sensor values 
   therm.readTemp();
   photo.readLight();
 
   if (dht11.read(humi, temp) == 0)
   {
+    // If the temperature is lower than the stored value update it
     if ((unsigned int) temp < minTemp) {
       EEPROMWriteInt(0, (unsigned int) temp);
     }
 
+    // If the temperature is higher than the stored value update it
     if ((unsigned int) temp > maxTemp) {
       EEPROMWriteInt(2, (unsigned int) temp);
     }
 
+    // Check if the temperature is in the correct range
+    // send an error if it's outside of it
+    // The same procedure is done for each sensor
     if (temp < temperature.minValue || temp > temperature.maxValue) {
       Serial.print("error temperature ");
       Serial.println(temp);
@@ -116,14 +129,17 @@ void reader(void* context) {
   String sensor;
   int minValue, maxValue;
 
+  // Read if there is something in the buffer
   if (Serial.available() > 0)
   {
+    // Break the message into pieces
     sensor = Serial.readStringUntil(',');
     minValue = Serial.parseInt();
     Serial.read();
     maxValue = Serial.parseInt();
     Serial.read();
 
+    // Set the new values for the sensor
     if (sensor == "temperature") {
       temperature.minValue = minValue;
       temperature.maxValue = maxValue;
@@ -141,6 +157,7 @@ void reader(void* context) {
   }
 }
 
+// Write a two byte integer to the non-volatile memory
 void EEPROMWriteInt(int adress, int value)
 {
   byte primerByte = ((value >> 0) & 0xFF);
@@ -150,6 +167,7 @@ void EEPROMWriteInt(int adress, int value)
   EEPROM.write(adress + 1, segonByte);
 }
 
+// Read a two byte integer from the non-volatile memory
 unsigned int EEPROMReadInt(int adress)
 {
   byte primerByte = EEPROM.read(adress);
